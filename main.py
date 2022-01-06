@@ -14,9 +14,8 @@ bot.remove_command('help')
 #register the class with the bot
 bot.add_cog(music_cog(bot))
 
-#start the bot with our token
-with open("token.txt") as file:
-    token = file.read()
+# load in the token from within hiroku
+token = process.env.DISC_TOKEN
+
 # power up our bot
 bot.run(token)
-# bot.run(os.getenv("TOKEN"))
