@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-
 from youtube_dl import YoutubeDL
 
 class music_cog(commands.Cog):
@@ -99,6 +98,7 @@ class music_cog(commands.Cog):
             self.vc.stop()
             #try to play next in the queue if it exists
             await self.play_music()
+            await ctx.send("Skipping master")
             
     @commands.command(name="disconnect", help="Disconnecting bot from VC")
     async def dc(self, ctx):
