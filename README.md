@@ -23,6 +23,9 @@ heroku config:set TOKEN=hogehoge
 # create and push your dockerfile to heroku
 heroku container:push web --app <name_of_app>
 
+# release the image
+heroku container:release web --app <name_of_app>
+
 # open your app to check it's running through:
 heroku open --app <name_of_app>
 ```
