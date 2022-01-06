@@ -15,7 +15,7 @@ bot.remove_command('help')
 bot.add_cog(music_cog(bot))
 
 # load in the token from within hiroku
-token = process.env.DISC_TOKEN
+token = os.environ('DISC_TOKEN')
 
 # power up our bot
 bot.run(token)
