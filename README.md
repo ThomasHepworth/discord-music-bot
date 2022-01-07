@@ -14,6 +14,7 @@ For a more detailed guide on how to set this all up, please see - https://linuxt
 ```
 https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git
 heroku/python
+https://github.com/xrisk/heroku-opus.git
 ```
 3) Under Config Vars, add a key named **_TOKEN_** and then enter your discord bot token as the value
 4) Connect it up to github under the _deploy_ tab
