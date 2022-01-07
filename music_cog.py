@@ -60,6 +60,7 @@ class music_cog(commands.Cog):
             self.vc.play(discord.FFmpegPCMAudio(m_url, **self.FFMPEG_OPTIONS), after=lambda e: self.play_next())
         else:
             self.is_playing = False
+            await self.vc.disconnect()
 
     @commands.command(name="play", help="Plays a selected song from youtube")
     async def p(self, ctx, *args):
