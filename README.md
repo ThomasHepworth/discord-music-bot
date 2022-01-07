@@ -7,6 +7,20 @@ The heroku CLI (which is required for this), can be downloaded [here](https://de
 For a more detailed guide on how to set this all up, please see - https://linuxtut.com/en/1b72bd2084a3f0c2e2a4/.
 
 ## Quick Notes on getting this up and running
+
+### Using base heroku
+1) Log into heroku and create a new app.
+2) Go to settings > Buildpacks and add:
+```
+https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git
+heroku/python
+```
+3) Under Config Vars, add a key named **_TOKEN_** and then enter your discord bot token as the value
+4) Connect it up to github under the _deploy_ tab
+5) Turn the bot on under **_Resources_**
+6) Wait and see if it wants to work...
+ 
+### Using Docker
 Once you've got the heroku CLI installed and running, cd into the python repository that contains this code.
 
 From there:
