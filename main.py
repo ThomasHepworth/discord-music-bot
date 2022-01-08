@@ -15,8 +15,8 @@ bot.remove_command('help')
 bot.add_cog(music_cog(bot))
 
 # load in the token from within hiroku
-token = os.environ['TOKEN'] # use this if you're using the TOKEN within heroku
-# token = os.getenv('TOKEN') # use this if you're running from docker
+# token = os.environ['TOKEN'] # use this if you're using the TOKEN within heroku
+token = os.getenv('TOKEN') # use this if you're running from docker
 
 # power up our bot
 bot.run(token)

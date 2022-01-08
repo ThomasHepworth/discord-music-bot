@@ -80,6 +80,7 @@ class music_cog(commands.Cog):
                 
                 if self.is_playing == False:
                     await self.play_music()
+                    self.vc.disconnect()
 
     @commands.command(name="queue", help="Displays the current songs in queue")
     async def q(self, ctx):
