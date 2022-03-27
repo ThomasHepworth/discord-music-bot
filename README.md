@@ -1,10 +1,12 @@
 # Instructions for using this code in another bot, or for re-releasing at a later point
 
-At present, this bot uses docker and heroku to run the bot 24/7.
+At present, this bot uses heroku to run the bot 24/7.
 
-The heroku CLI (which is required for this), can be downloaded [here](https://devcenter.heroku.com/articles/heroku-cli).
+The heroku CLI (which you may want to use for interacting with heroku), can be downloaded [here](https://devcenter.heroku.com/articles/heroku-cli).
 
 For a more detailed guide on how to set this all up, please see - https://linuxtut.com/en/1b72bd2084a3f0c2e2a4/.
+
+If you wish to run this locally, please see the docker notes.
 
 ## Quick Notes on getting this up and running
 
@@ -48,7 +50,12 @@ heroku open --app <name_of_app>
 ## Running from docker
 This is far simpler as it only involves faffing around with docker.
 
-Simply run:
+Go to `main.py` and set it so the bot token is identified using:
+> token = os.getenv('TOKEN') # use this if you're running from docker
+
+This just keeps everything nice and simple and means you can run the bot directly from docker once download.
+
+And then simply run:
 ```
 docker build --tag <name> .
 docker run -e TOKEN=<paste_token> -d <name>
