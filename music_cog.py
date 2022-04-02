@@ -114,8 +114,8 @@ class Song:
         self.requester = source.requester
 
     def create_embed(self):
-        embed = (discord.Embed(title='🎵 Now playing 🎵',
-                               description=f'```css\n{self.source.title}\n```',
+        embed = (discord.Embed(title='🎵  Now playing  🎵',
+                               description=f'```yaml\n{self.source.title}\n```',
                                color=discord.Color.blurple())
                  .add_field(name='Duration', value=parse_minutes(self.source.raw_duration))
                  .add_field(name='Requested by', value=self.requester.mention)
@@ -145,6 +145,11 @@ class SongQueue(asyncio.Queue):
 
     def remove(self, index: int):
         del self._queue[index]
+    
+    def index_song(self, index: int):
+        # item = self.item
+        # return self._queue[index]
+        return list(self._queue)
 
 
 class VoiceState:
@@ -196,7 +201,7 @@ class VoiceState:
                 # the player will disconnect due to performance
                 # reasons.
                 try:
-                    async with timeout(10):  # 3 minutes
+                    async with timeout(300):  # one minute
                         self.current = await self.songs.get()
                 except asyncio.TimeoutError:
                     self.bot.loop.create_task(self.stop())
@@ -286,7 +291,7 @@ class Music(commands.Cog):
 
         ctx.voice_state.voice = await destination.connect()
 
-    @commands.command(name='leave', aliases=['disconnect'])
+    @commands.command(name='leave', aliases=['disconnect', 'quit'])
     @commands.has_permissions(manage_guild=True)
     async def _leave(self, ctx: commands.Context):
         """Clears the queue and leaves the voice channel."""
@@ -309,7 +314,7 @@ class Music(commands.Cog):
             return await ctx.send('Volume must be between 0 and 100')
 
         ctx.voice_state.volume = volume / 100
-        await ctx.send('Volume of the player set to {}%'.format(volume))
+        await ctx.send(f'Volume of the player set to {volume}%')
 
     @commands.command(name='now', aliases=['current', 'playing'])
     async def _now(self, ctx: commands.Context):
@@ -345,6 +350,14 @@ class Music(commands.Cog):
         if not ctx.voice_state.is_playing:
             ctx.voice_state.voice.stop()
             await ctx.message.add_reaction('⏹')
+
+    @commands.command(name='clear') # not currently working
+    @commands.has_permissions(manage_guild=True)
+    async def _stop(self, ctx: commands.Context):
+        """Clears the current queue."""
+
+        ctx.voice_state.songs.clear()
+        await ctx.send("Song queue cleared ☕")
 
     @commands.command(name='skip') # not currently working
     async def _skip(self, ctx: commands.Context):
@@ -394,10 +407,9 @@ class Music(commands.Cog):
         for i, song in enumerate(ctx.voice_state.songs[start:end], start=start):
             queue += f'`{i + 1}.` [**{song.source.title}**]({song.source.url}) -- `{parse_minutes(song.source.raw_duration)}`\n'
             timer += song.source.raw_duration
-        timer = parse_minutes(timer)
 
-        embed = (discord.Embed(description='**{} track(s)** -- `{}`:\n\n{}'.format(len(ctx.voice_state.songs), timer, queue)) # where is voice_state specified?
-                 .set_footer(text='Viewing page {}/{}'.format(page, pages)))
+        embed = (discord.Embed(description='**{} track(s)** -- `{}`:\n\n{}'.format(len(ctx.voice_state.songs), parse_minutes(timer), queue))
+                 .set_footer(text=f'Viewing page {page}/{pages}'))
         await ctx.send(embed=embed)
 
     @commands.command(name='shuffle')
@@ -411,13 +423,14 @@ class Music(commands.Cog):
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='remove')
-    async def _remove(self, ctx: commands.Context, index: int):
+    async def _remove(self, ctx: commands.Context, index: int = 1):
         """Removes a song from the queue at a given index."""
 
         if len(ctx.voice_state.songs) == 0:
             return await ctx.send('Empty queue.')
 
-        
+        # await ctx.send(f'🎵 Removing `{ctx.voice_state.songs.index_song}`')
+        # await ctx.send(f'{ctx.voice_state.songs.source.title}')
         ctx.voice_state.songs.remove(index - 1)
         await ctx.message.add_reaction('✅')
 
@@ -450,7 +463,7 @@ class Music(commands.Cog):
             try:
                 source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
             except YTDLError as e:
-                await ctx.send('An error occurred while processing this request: {}'.format(str(e)))
+                await ctx.send(f'An error occurred while processing this request: {str(e)}')
             else:
                 song = Song(source)
 
